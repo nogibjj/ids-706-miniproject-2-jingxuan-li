@@ -1,69 +1,57 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+"""
+Main CLI or app entry point
+"""
 
-def load_and_preview_data(file_path):
+from mylib.lib import (
+    load_and_preview_data,
+    calculate_summary_statistics,
+    calculate_descriptive_statistics,
+    plot_age_distribution,
+    plot_gender_distribution_by_department,
+)
+
+
+def g_describe(file):
     """
-    Loads the data from the specified CSV file and prints the first few rows.
+    Loads and previews data.
     """
-    df = pd.read_csv(file_path)
-    print(df.head())
-    return df
+    g = load_and_preview_data(file)
+    return g
 
-def calculate_summary_statistics(df):
+
+def save_to_md(text, filename="descriptive.md"):
     """
-    Calculates and prints summary statistics for the data.
+    Appends text to a markdown file.
     """
-    summary_statistics = df.describe()
-    print(summary_statistics)
-    return summary_statistics
+    with open(filename, "a") as file:
+        file.write(text + "\n")
 
-def calculate_descriptive_statistics(df):
+
+def insert_image_to_md(image_filename, markdown_filename="descriptive.md"):
     """
-    Calculates and prints the descriptive statistics for Age and Salary.
+    Inserts the image reference into the markdown file.
     """
-    age_mean = df['Age'].mean()
-    age_median = df['Age'].median()
-    age_std = df['Age'].std()
+    save_to_md(f"![{image_filename}]({image_filename})", markdown_filename)
 
-    salary_mean = df['Salary'].mean()
-    salary_median = df['Salary'].median()
-    salary_std = df['Salary'].std()
 
-    print("Age descriptive statistics:")
-    print(f"Average age: {age_mean:.2f}")
-    print(f"Median age: {age_median}")
-    print(f"Standard Deviation of age: {age_std:.2f}")
-
-    print("\nSalary descriptive statistics:")
-    print(f"Average salary: {salary_mean:.2f}")
-    print(f"Median salary: {salary_median}")
-    print(f"Standard Deviation of salary: {salary_std:.2f}")
-
-def plot_age_distribution(df):
-    """
-    Plots the distribution of Age.
-
-    """
-    plt.hist(df['Age'], bins=10, color='blue', alpha=0.7)
-    plt.title('Age Distribution')
-    plt.xlabel('Age')
-    plt.ylabel('Frequency')
-    plt.grid(True)
-    plt.show()
-
-def main():
-    # Load and preview the data
-    file_path = './Employee.csv'
-    df = load_and_preview_data(file_path)
-
-    # Calculate and display summary statistics
+if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
+    file_path = "./Employee.csv"
+    df = g_describe(file_path)
     calculate_summary_statistics(df)
-
-    # Calculate and display descriptive statistics for Age and Salary
     calculate_descriptive_statistics(df)
-
-    # Plot the Age distribution
     plot_age_distribution(df)
+    plot_gender_distribution_by_department(df)
+    save_to_md("# Employee Data Overview")
+    save_to_md("## Data Head", "descriptive.md")
+    save_to_md(df.head().to_markdown(), "descriptive.md")
+    save_to_md("## Summary Statistics", "descriptive.md")
+    summary_stats = calculate_summary_statistics(df)
+    save_to_md(summary_stats.to_markdown(), "descriptive.md")
+    save_to_md("## Descriptive Statistics for Age and Salary", "descriptive.md")
+    calculate_descriptive_statistics(df)
+    save_to_md("## Age Distribution Plot", "descriptive.md")
+    insert_image_to_md("age.png")
 
-if __name__ == '__main__':
-    main()
+    save_to_md("## Gender Distribution by Department Plot", "descriptive.md")
+    insert_image_to_md("department.png")
