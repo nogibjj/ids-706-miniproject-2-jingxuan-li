@@ -56,6 +56,7 @@ Here is an overview of important files and directories in the repository:
 - `.github/workflows/`: Includes CI/CD pipeline configurations using GitHub Actions.
 - `Makefile`: Defines scripts for common project tasks such as testing.
 - `README.md`: Provides project documentation.
+- `descriptive.md`: generate md file for the result of analysis
 - `mylib/lib.py`: library script.
 - `main.py`: Main Python script.
 - `requirements.txt`: Lists all Python dependencies.
